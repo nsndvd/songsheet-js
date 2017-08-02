@@ -23,4 +23,6 @@ If only pdfMake var is wanted, call
   let txt = songsheetGen.gen(false)
 ```
 
-This package uses the pdfMake library.
+For a complete tutorial on the songsheetsyntax click [here](https://github.com/jannessm/songsheet).
+
+This package uses the [pdfMake](https://github.com/bpampuch/pdfmake) library.
