@@ -64,7 +64,6 @@ class SimplestLayout extends Layout{
     go_through_blocks_and_print(song){
         let prev_block = new Block('', []);
         let counter = 1;
-        let i = 0;
 
         for(let block of song.get_order()){
             // look forward and count amount of blocks

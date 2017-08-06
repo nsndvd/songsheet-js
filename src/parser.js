@@ -17,9 +17,9 @@ class SongsheetParser{
             if(!/\w/.test(line))
                 continue;
 
-            let offset_title = line.toLowerCase().indexOf('[title:');
-            let offset_order = line.toLowerCase().indexOf('[order:');
-            let offset_block = line.toLowerCase().indexOf('[block:');
+            let offset_title = SongsheetParser.escape_block(line).indexOf('[title:');
+            let offset_order = SongsheetParser.escape_block(line).indexOf('[order:');
+            let offset_block = SongsheetParser.escape_block(line).indexOf('[block:');
             let end = line.indexOf(']');
 
             // force new lines after title and order
@@ -49,9 +49,8 @@ class SongsheetParser{
                 lines = [];
 
                 // get title
-                end = end - offset_block - 7;
-                curr_block_title = line.substr(offset_block + 7, end).replace(/(^\s+|\s+$)/g, '');
-
+                end = end - offset_block - 8;
+                curr_block_title = line.substr(offset_block + 8, end).replace(/(^\s+|\s+$)/g, '');
                 // if order is emtpy save order of appearance
                 default_order[default_order.length] = curr_block_title;
             }
@@ -66,5 +65,11 @@ class SongsheetParser{
             order = default_order;
 
         return [title, order, blocks];
+    }
+
+    static escape_block(string){
+        string = string.toLowerCase().replace(/\[\s+/, '');
+        string = string.replace(/\s+:/, ':');
+        return string
     }
 }

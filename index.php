@@ -1,5 +1,5 @@
 <?php
-    shell_exec('bash ./js/installer.sh');
+    shell_exec('bash ./installer.sh');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,12 +8,27 @@
     <title>Test</title>
 </head>
 <body>
-    <script src="js/songsheet.js"></script>
+    <script src="songsheet.js"></script>
     <script>
             let gen = new SongsheetGen();
-            let txt = <?php echo '`'.file_get_contents('./test/How_Great_is_our_God.st').'`' ?>;
+            let txt = `
+            [Title: Wonderwall - Oasis]
+
+[Order: Intro, Verse 1, Verse 2, Verse 1]
+
+[Block : Verse 1]
+[Em7] Today is [G]gonna be the day
+That they're [Dsus4]gonna throw it back to [A7sus4]you
+
+[Block : Verse 2]
+[Em7] Back beat, the [G]word is on the street
+That the [Dsus4]fire in your heart is [A7sus4]out,
+
+[Block : Intro]
+[Em7] [G] [Dsus4] [A7sus4]`;
             gen.add_song(txt, {"table": true});
-            let res = gen.gen(true);
+            let res = gen.gen(false);
+            console.log( JSON.stringify(res, null, 4));
     </script>
 </body>
 </html>
