@@ -7,7 +7,7 @@ class Line{
         this.width = res[2];
         this.diff_annotations = res[3];
         this.ann_cells = this.annotations.length;
-        this.has_annotations = this.ann_cells !== 0;
+        this.has_annotations = this.ann_cells > 0;
         this.parent = null;
     }
 

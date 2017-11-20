@@ -10,27 +10,27 @@ class fPDF{
 
 	cell(text, border) {
 		let id = this.line_buffer.length;
-        this.last_border = fPDF.get_border(border);
+		this.last_border = fPDF.get_border(border);
 
-        this.line_buffer[id] = {
-            text: text,
-            font: this.font,
-            border: this.last_border,
-            preserveLeadingSpaces: true,
-            lineHeight: this.line_height
-        };
+    this.line_buffer[id] = {
+      text: text,
+      font: this.font,
+      border: this.last_border,
+      preserveLeadingSpaces: true,
+      lineHeight: this.line_height
+    };
 
 		// if get text was used unpack it
 		if (Array.isArray(text) && text.length === 1)
 			text = text[0];
 
-        // if text is json
+		// if text is json
 		if (typeof text === 'object' && !Array.isArray(text)){
-		  	this.line_buffer[id].text = text.text || '';
-        	this.line_buffer[id].fontSize = text.fontSize;
+		  this.line_buffer[id].text = text.text || '';
+			this.line_buffer[id].fontSize = text.fontSize;
 			this.line_buffer[id].bold = text.bold;
-        	this.line_buffer[id].italics = text.italics;
-        	this.line_buffer[id].color = text.color;
+      this.line_buffer[id].italics = text.italics;
+      this.line_buffer[id].color = text.color;
 		}
 	}
 
@@ -41,7 +41,7 @@ class fPDF{
 				this.line_buffer[this.line_buffer.length] = {
 					text: ' ',
 					border: this.last_border,
-          			preserveLeadingSpaces: true,
+					preserveLeadingSpaces: true,
 					lineHeight: this.line_height
 				};
 

@@ -12,7 +12,7 @@ class SongsheetGen{
     gen(download){
         if(typeof download === 'undefined')
             download = true;
-        download = download && true;
+        download = download;
         let res = [];
         for(let song in this.songs){
             if(this.songs.hasOwnProperty(song)) {

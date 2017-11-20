@@ -1,7 +1,6 @@
 
 class Block{
     constructor(title, lines){
-        console.log(title);
         this.title = title;
         this.lines = lines;
         this.annotation_cells = 0;
