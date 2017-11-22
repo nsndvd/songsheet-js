@@ -4,6 +4,7 @@ class fPDF{
 		this.line_buffer = [];
 		this.table_buffer = [];
 		this.body = [];
+		this.footer = undefined;
 		this.last_border = null;
 		this.line_height = 1;
 	}
@@ -28,7 +29,6 @@ class fPDF{
         else if (typeof content === 'object' && Array.isArray(content)){
 			let line = [];
 			for(let elem of content){
-				console.log(elem);
 				// if input is just text
 				if(typeof elem === 'string')
 					line.push({
@@ -45,6 +45,7 @@ class fPDF{
 				// if input is get_text object
 				else{
                     elem.text = elem.text || '';
+                    elem.font = this.font;
                     elem.margin = margin;
                     line.push(elem);
 				}
@@ -97,12 +98,17 @@ class fPDF{
 
 	get_body_as_string(){
 		return {
-			content : this.body
+			content : this.body,
+			footer: this.footer
 		}
 	}
 
 	set_font(font){
 		this.font = font;
+	}
+
+	set_footer(content){
+        this.footer = content;
 	}
 
 	static get_border(border){
