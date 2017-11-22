@@ -13,7 +13,7 @@
     <script>
             let gen = new SongsheetGen();
             let txt = `
-            [Title: Wonderwall; bPM: 100; title: test]
+            [Title: Wonderwall; bPM: 100; artist: Oasis;books:fj 4-43,fj3 5555]
 
 [Order: Intro, Verse 1, Verse 2, Verse 1]
 

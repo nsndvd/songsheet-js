@@ -8,7 +8,8 @@ class SimplestLayout extends Layout{
         this.song = song;
         //this.pdf.set_font(this.font);
 
-        // write title
+        // write header
+        this.write_header(song.bpm, song.books);
         this.write_title(song.title);
 
         // iterate over blocks for writing

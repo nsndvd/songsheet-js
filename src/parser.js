@@ -36,34 +36,32 @@ class SongsheetParser{
                 let match;
                 let str = SongsheetParser.escape_block(line);
                 let offset = 0;
-                while((match = str.search(infos_regex)) > 0 ){
+                while((match = str.search(infos_regex)) >= 0 ){
                   let key = str.charAt(match) + str.charAt(match+1);
                   let key_length;
-                  let separator = str.indexOf(';', match) > 0 ? str.indexOf(';', match) + offset : end - offset;
+                  let separator = str.indexOf(';', match) > 0 ? str.indexOf(';', match) : str.indexOf(']', match);
+
                   switch(key){
                     case 'ti':
-                      key_length = 7;
-                      title = line.substr(offset+match+key_length, separator - match - key_length);
+                      key_length = 6;
+                      title = SongsheetParser.get_stripped_substring(line, offset, match, key_length, separator);
                       break;
                     case 'bp':
-                      key_length = 5;
-                      bpm = line.substr(offset+match+key_length, separator - match - key_length);
+                      key_length = 4;
+                      bpm = SongsheetParser.get_stripped_substring(line, offset, match, key_length, separator);
                       break;
                     case 'ar':
-                      key_length = 8;
-                      artist = line.substr(offset+match+key_length, separator - match - key_length);
+                      key_length = 7;
+                      artist = SongsheetParser.get_stripped_substring(line, offset, match, key_length, separator);
                       break;
                     case 'bo':
-                      key_length = 7;
-                      books = line.substr(offset+match+key_length, separator - match - key_length).split(',');
+                      key_length = 6;
+                      books = SongsheetParser.get_stripped_substring(line, offset, match, key_length, separator).split(',');
                       break;
                   }
-                  str = str.substr(match+key_length);
-                  offset += match+key_length;
+                  str = SongsheetParser.escape_block(line.substr(offset+separator+1)); //remove all before first separator
+                  offset += separator+1;
                 }
-                console.log(title, bpm, artist, books);
-                end = end - offset_infos - 7;
-                title = line.substr(offset_infos + 7, end).replace(/(^\s+|\s+$)/g, '');
                 continue;
             }
 
@@ -98,12 +96,16 @@ class SongsheetParser{
         if(order.length === 0)
             order = default_order;
 
-        return [title, order, blocks];
+        return [title, artist, bpm, books, order, blocks];
     }
 
     static escape_block(string){
         string = string.toLowerCase().replace(/\[\s+/, '');
         string = string.replace(/\s+:/, ':');
         return string
+    }
+
+    static get_stripped_substring(line, offset, match, key_length, separator){
+        return line.substr(offset + match + key_length, separator - match - key_length).replace(/(^\s+|\s+$)/g, '');
     }
 }

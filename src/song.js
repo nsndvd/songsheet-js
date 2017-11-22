@@ -8,8 +8,11 @@ class Song{
 
         let res = SongsheetParser.parse(string);
         this.title = res[0];
-        this.set_blocks(res[2]);
-        this.order = res[1];
+        this.artist = res[1];
+        this.bpm = res[2];
+        this.books = res[3];
+        this.set_blocks(res[5]);
+        this.order = res[4];
 
         if(this.layout === REDUCED_LAYOUT)
             this.layout = new ReducedLayout(layout_settings);

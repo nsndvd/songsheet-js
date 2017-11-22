@@ -8,30 +8,36 @@ class fPDF{
 		this.line_height = 1;
 	}
 
-	cell(text, border) {
+	cell(content, border) {
 		let id = this.line_buffer.length;
 		this.last_border = fPDF.get_border(border);
 
-    this.line_buffer[id] = {
-      text: text,
-      font: this.font,
-      border: this.last_border,
-      preserveLeadingSpaces: true,
-      lineHeight: this.line_height
-    };
+		this.line_buffer[id] = {
+		  text: content,
+		  font: this.font,
+		  border: this.last_border,
+		  preserveLeadingSpaces: true,
+		  lineHeight: this.line_height
+		};
 
 		// if get text was used unpack it
-		if (Array.isArray(text) && text.length === 1)
-			text = text[0];
+		if (Array.isArray(content) && content.length === 1)
+			content = content[0];
 
 		// if text is json
-		if (typeof text === 'object' && !Array.isArray(text)){
-		  this.line_buffer[id].text = text.text || '';
-			this.line_buffer[id].fontSize = text.fontSize;
-			this.line_buffer[id].bold = text.bold;
-      this.line_buffer[id].italics = text.italics;
-      this.line_buffer[id].color = text.color;
+		if (typeof content === 'object' && !Array.isArray(content) && !content.image){
+		    this.line_buffer[id].text = content.text || '';
+			this.line_buffer[id].fontSize = content.fontSize;
+			this.line_buffer[id].bold = content.bold;
+            this.line_buffer[id].italics = content.italics;
+			this.line_buffer[id].color = content.color;
 		}
+
+		// if content is array
+        if (typeof content === 'object' && Array.isArray(content)){
+			content[0].border = this.last_border;
+			this.line_buffer[id] = content;
+        }
 	}
 
 	new_line(){
@@ -53,7 +59,7 @@ class fPDF{
 	set_widths(widths){
 		for(let i = 0; i<widths.length; i++)
 			if(typeof widths[i] === 'number')
-        widths[i] = widths[i] * 2.5;
+        		widths[i] = widths[i] * 2.5;
 		this.widths = widths;
 	}
 
@@ -107,6 +113,13 @@ class fPDF{
 			color: color,
       		preserveLeadingSpaces: true,
             lineHeight: this.line_height
+		}
+	}
+
+	get_image(path, width){
+		return {
+			image: path,
+			width: width
 		}
 	}
 
