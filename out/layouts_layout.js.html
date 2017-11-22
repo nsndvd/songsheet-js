@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: layouts/layout.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: layouts/layout.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * abstract Layout class. Basic constructor settings and helper classes.
+ * @property {Object} pdf - fPDF object
+ * @property {string} font - font to use for this layout
+ * @property {number} font_size - default font-size
+ * @property {boolean} table - whether to print table lines. default is true
+ * @property {boolean} annotations - whether to print annotations. default is true
+ * @property {Object} song - song which has this layout
+ * */
+class Layout{
+    /**
+     * @constructor
+     * @param {Object} settings - settings which can be applied to this layout (optional).
+     * @param {string} settings.font - Available fonts are 'ubuntu', 'anonymous', 'roboto'. default is 'ubuntu'
+     * @param {boolean} settings.table - Display tablelines. default is true
+     * @param {boolean} settings.annotations - Display annotations. default is true
+     * @returns {Layout} SimplestLayout - object of SimplestLayout
+     * */
+    constructor(settings){
+        if(new.target === Layout)
+            throw new TypeError('this Class is an abstract class.');
+
+        this.pdf = new fPDF();
+        this.font = DEFAULT_FONT;
+        this.font_size = 10;
+        this.table = true;
+        this.annotations = true;
+        this.song = null;
+
+        if(settings &amp;&amp; 'table' in settings)
+            this.table = settings['table'];
+        if(settings &amp;&amp; 'annotations' in settings)
+            this.annotations = settings['annotations'];
+        if(settings &amp;&amp; 'font' in settings &amp;&amp; settings.font in FONTS){
+            this.font = settings.font;
+        }
+
+        pdfMake.fonts = FONTS;
+    }
+
+    /**
+     * generates a pdfMake object for a given Song object.
+     * @abstract
+     * @param {Object} song - Song object to generate a pdfMake object for.
+     * */
+    gen(song){
+        if(new.target === Layout)
+            throw new TypeError('this Class is an abstract class.');
+    }
+
+    /**
+     * generates a pdfMake object for a block with a given amount of repetitions
+     * @abstract
+     * @param {Object} block - Block to print
+     * @param {number} counter - amount of repetitions
+     * */
+    print_block(block, counter){
+        if(new.target === Layout)
+            throw new TypeError('this Class is an abstract class.');
+    }
+
+    /**
+     * generates a pdfMake object for a line with a border
+     * @param {Object} line - Line object to print
+     * @abstract
+     * */
+    print_line(line){
+        if(new.target === Layout)
+            throw new TypeError('this Class is an abstract class.');
+    }
+
+    /**
+     * set font for this layout.
+     * @param {string} font - Font to set
+     * */
+    set_font(font=DEFAULT_FONT){
+        for(let f in FONTS)
+            if(font === f)
+                this.font = font;
+    }
+
+    /**
+     * Parse markdown string to pdfMake json.
+     * Options are:
+     * * - italic
+     * ** - bold
+     * &lt;r> - red
+     * &lt;g> - green
+     * &lt;b> - blue
+     * @param {string} string - string to parse
+     * @returns {Line[]} line - returns the string as an array of text elements in pdfMake format
+     */
+    parse_markdown_line(string){
+        let line = [];
+
+        let first = true;
+        string += ' ';     // catch * at the end
+
+        let s = new State();
+        let match = string.match(MARKUP_REG);
+        if(match === null){
+            line[0] = fPDF.get_text(string, this.font_size);
+            string = '';
+        }
+        while(match){
+            let skip = match[0].length;
+            let weight = s.is_bold ? 'B' : '';
+            weight += s.is_italic ? 'I' : '';
+
+            let text = string.substr(0, string.search(new RegExp(escapeRegExp(match[0]))));
+            line[line.length] = fPDF.get_text(text, this.font_size, weight, s.color);
+
+            if(/\*[^*]/.test(match[0]))
+                skip -= 1;
+            string = string.substr(text.length + skip);
+
+            s.update(match[0]);
+
+            match = string.match(MARKUP_REG);
+            first = false;
+        }
+        let weight = s.is_bold ? 'B' : '';
+        weight += s.is_italic ? 'I' : '';
+
+        if(string.length > 0)
+            line[line.length] = fPDF.get_text(string, this.font_size, weight, s.color);
+        return line;
+    }
+
+    /**
+     * parse title, artist, bpm and books to a pdfMake json.
+     * @param {string} title - title of the song as a string
+     * @param {string} artist - artist as a string
+     * @param {string} bpm - bpm as a string
+     * @param {string[]} books - array of books where the song is from
+     * */
+    write_header(title, artist, bpm, books){
+        this.pdf.set_widths(['*', 11/2.5, 10, 11/2.5, 40/2.5]);
+        this.pdf.cell(fPDF.get_text(title, this.font_size + 2), 0);
+
+        this.pdf.cell(fPDF.get_image(bpm_image, 16), 0);
+        this.pdf.cell(fPDF.get_text(bpm, this.font_size - 2), 0, [0,3]);
+
+        this.pdf.cell(fPDF.get_image(books_image, 16), 0);
+        this.pdf.cell(fPDF.get_text(books.join('\n'), this.font_size - 2), 0);
+        this.pdf.new_table();
+
+        this.pdf.cell(fPDF.get_text(artist, this.font_size - 2), 0, [0,-10]);
+        this.pdf.new_table();
+    }
+
+    /**
+     * set widths of the tables with respect to amount of annotation cells
+     * */
+    set_widths(){
+        let width_lyr = 2 * this.song.lyrics_width;
+        let width_ann = this.song.ann_cells > 0 ? (190 - width_lyr) / this.song.ann_cells : 0;
+
+        if(width_ann === 0)
+            width_lyr = '*';
+
+        let widths = [width_lyr];
+        for(let i = 1; i &lt;= this.song.ann_cells; i++)
+            widths[i] = width_ann;
+
+        this.pdf.set_widths(widths);
+    }
+}
+
+/**
+ * State class which saves the current state of text formats while parsing a markdown string
+ * @property {boolean} is_bold - current text is bold
+ * @property {boolean} is_italic - current text is italic
+ * @property {number[]} color - current color of the text as an array with values 0 to 255
+ * */
+class State{
+    /**
+     * @constructor
+     * */
+    constructor(){
+        this.is_bold = false;
+        this.is_italic = false;
+        this.color = [0, 0, 0];
+    }
+
+    /**
+     * updates the current state by the matched string
+     * @param {string} match - update the current state by the matched string
+     * */
+    update(match){
+        if(/\*[^*]/.test(match))
+            this.is_italic = !this.is_italic;
+        else if(/\*\*/.test(match))
+            this.is_bold = !this.is_bold;
+        else if(/&lt;r>/.test(match))
+            this.color = [255, 0, 0];
+        else if(/&lt;g>/.test(match))
+            this.color = [0, 255, 0];
+        else if(/&lt;b>/.test(match))
+            this.color = [0, 0, 255];
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Block.html">Block</a></li><li><a href="fPDF.html">fPDF</a></li><li><a href="Layout.html">Layout</a></li><li><a href="Line.html">Line</a></li><li><a href="SimplestLayout.html">SimplestLayout</a></li><li><a href="Song.html">Song</a></li><li><a href="SongsheetGen.html">SongsheetGen</a></li><li><a href="SongsheetParser.html">SongsheetParser</a></li><li><a href="State.html">State</a></li></ul><h3>Global</h3><ul><li><a href="global.html#escapeRegExp">escapeRegExp</a></li><li><a href="global.html#max">max</a></li><li><a href="global.html#readTextFile">readTextFile</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 22 2017 23:43:02 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
