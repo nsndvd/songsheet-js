@@ -8,35 +8,48 @@ class fPDF{
 		this.line_height = 1;
 	}
 
-	cell(content, border) {
+	cell(content, border, margin) {
 		let id = this.line_buffer.length;
 		this.last_border = fPDF.get_border(border);
+		content = !Array.isArray(content) && typeof content !== 'string' ? [content] : content;
 
-		this.line_buffer[id] = {
-		  text: content,
-		  font: this.font,
-		  border: this.last_border,
-		  preserveLeadingSpaces: true,
-		  lineHeight: this.line_height
-		};
-
-		// if get text was used unpack it
-		if (Array.isArray(content) && content.length === 1)
-			content = content[0];
-
-		// if text is json
-		if (typeof content === 'object' && !Array.isArray(content) && !content.image){
-		    this.line_buffer[id].text = content.text || '';
-			this.line_buffer[id].fontSize = content.fontSize;
-			this.line_buffer[id].bold = content.bold;
-            this.line_buffer[id].italics = content.italics;
-			this.line_buffer[id].color = content.color;
-		}
+		// if content is just a string
+		if(typeof content === 'string')
+			this.line_buffer[id] = {
+			  text: content,
+			  font: this.font,
+			  border: this.last_border,
+			  preserveLeadingSpaces: true,
+			  lineHeight: this.line_height,
+			  margin: margin
+			};
 
 		// if content is array
-        if (typeof content === 'object' && Array.isArray(content)){
-			content[0].border = this.last_border;
-			this.line_buffer[id] = content;
+        else if (typeof content === 'object' && Array.isArray(content)){
+			let line = [];
+			for(let elem of content){
+				console.log(elem);
+				// if input is just text
+				if(typeof elem === 'string')
+					line.push({
+                        text: elem,
+                        font: this.font,
+                        preserveLeadingSpaces: true,
+                        lineHeight: this.line_height,
+						margin: margin
+                    });
+				// if input is an image
+				else if(elem.image){
+					line.push(elem);
+				}
+				// if input is get_text object
+				else{
+                    elem.text = elem.text || '';
+                    elem.margin = margin;
+                    line.push(elem);
+				}
+			}
+			this.line_buffer[id] = {columns: line, border: this.last_border};
         }
 	}
 

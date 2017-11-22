@@ -85,20 +85,15 @@ class Layout{
         return line;
     }
 
-    write_title(title, artist){
-        this.pdf.set_widths(['*']);
+    write_header(title, artist, bpm, books){
+        this.pdf.set_widths(['*', 11/2.5, 10, 11/2.5, 30/2.5]);
         this.pdf.cell(fPDF.get_text(title, this.font_size + 2), 0);
+        this.pdf.cell(this.pdf.get_image(bpm_image, 16), 0);
+        this.pdf.cell(fPDF.get_text(bpm, this.font_size - 2), 0, [0,3]);
+        this.pdf.cell(this.pdf.get_image(books_image, 16), 0);
+        this.pdf.cell(fPDF.get_text(books.join('\n'), this.font_size - 2), 0);
         this.pdf.new_table();
-    }
-
-    write_header(bpm, books){
-        let bpm_content = [this.pdf.get_image(bpm_image, 16), fPDF.get_text('', this.font_size - 2)];
-        let books_content = [this.pdf.get_image(books_image, 16), fPDF.get_text(books[0], this.font_size - 2)];
-        this.pdf.set_widths(['*', 10, 10, 10]);
-        this.pdf.cell('', 0);
-        this.pdf.cell(bpm_content, 0);
-        this.pdf.cell(fPDF.get_text(bpm, this.font_size - 2), 0);
-        this.pdf.cell(books_content, 0);
+        this.pdf.cell(fPDF.get_text(artist, this.font_size - 2), 0, [0,-10]);
         this.pdf.new_table();
     }
 
