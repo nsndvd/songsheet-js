@@ -15,6 +15,9 @@ class Layout{
             this.table = settings['table'];
         if(settings && 'annotations' in settings)
             this.annotations = settings['annotations'];
+        if(settings && 'font' in settings && settings.font in FONTS){
+            this.font = settings.font;
+        }
 
         pdfMake.fonts = FONTS;
     }
@@ -86,13 +89,16 @@ class Layout{
     }
 
     write_header(title, artist, bpm, books){
-        this.pdf.set_widths(['*', 11/2.5, 10, 11/2.5, 30/2.5]);
+        this.pdf.set_widths(['*', 11/2.5, 10, 11/2.5, 40/2.5]);
         this.pdf.cell(fPDF.get_text(title, this.font_size + 2), 0);
+
         this.pdf.cell(this.pdf.get_image(bpm_image, 16), 0);
         this.pdf.cell(fPDF.get_text(bpm, this.font_size - 2), 0, [0,3]);
+
         this.pdf.cell(this.pdf.get_image(books_image, 16), 0);
         this.pdf.cell(fPDF.get_text(books.join('\n'), this.font_size - 2), 0);
         this.pdf.new_table();
+
         this.pdf.cell(fPDF.get_text(artist, this.font_size - 2), 0, [0,-10]);
         this.pdf.new_table();
     }

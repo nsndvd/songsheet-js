@@ -40,7 +40,7 @@ let FONTS = {
         italics: 'UbuntuMono-RI.ttf',
         bolditalics: 'UbuntuMono-BI.ttf',
     },
-    Roboto: {
+    roboto: {
         normal: 'Roboto-Regular.ttf',
         bold: 'Roboto-Medium.ttf',
         italics: 'Roboto-Italic.ttf',

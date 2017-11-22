@@ -28,8 +28,8 @@ That the [Dsus4]fire in your heart is [A7sus4]out,
 [Block : Intro]
 [Em7] [G] [Dsus4] [A7sus4]`;
             gen.add_song(txt, {"table": true});
-            let res = gen.gen(false);
-            document.body.innerText = 'var dd = ' + JSON.stringify(res[0], null, 2) + ';';
+            let res = gen.gen(true);
+            document.body.innerHTML = '<img src="images/logo.jpg"><br>var dd = ' + JSON.stringify(res[0], null, 2) + ';';
     </script>
 </body>
 </html>
