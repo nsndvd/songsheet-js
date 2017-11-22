@@ -5,8 +5,23 @@ class SimplestLayout extends Layout{
     }
 
     gen(song){
+        let that = this;
         this.song = song;
-        //this.pdf.set_font(this.font);
+        this.pdf.set_font(this.font);
+        this.pdf.set_footer(function (currPage, pageCount){
+            let text = fPDF.get_text('erstellt mit Songsheet '+currPage+ ' von '+pageCount, 8, undefined, [100, 100, 100]);
+            text.width = 130;
+            text.font = that.pdf.font;
+            text.margin = [2, 1];
+            return {
+              columns: [
+                  {text: '', width:'*'},
+                  text,
+                  {image: logo, width: 10},
+                  {text: '', width: 25}
+              ]
+            };
+        });
 
         // write header
         this.write_header(song.title, song.artist, song.bpm, song.books);
