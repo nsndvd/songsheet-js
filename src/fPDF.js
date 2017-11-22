@@ -1,4 +1,17 @@
+/**
+ * fPDF wrapper for pdfMake
+ * @property {string[]} widths - widths of current table
+ * @property {Object[]} line_buffer - line buffer containing cells of current line
+ * @property {Object[]} table_buffer - table buffer containing lines of current table
+ * @property {Object[]} body - contaning tables of whole document
+ * @property {Object} footer - function or object for the footer (see pdfMake)
+ * @property {string[]} last_border - the last border applied to a cell
+ * @property {number} line_height - line height of this document
+ * */
 class fPDF{
+	/**
+	 * @constructor
+	 * */
 	constructor(){
 		this.widths = [];
 		this.line_buffer = [];
@@ -9,6 +22,12 @@ class fPDF{
 		this.line_height = 1;
 	}
 
+	/**
+	 * adds a cell to the current table
+	 * @param {Object | Object[]} content - string or object from get_text or get_image
+	 * @param {string} border - border for this cell. string contains letter T,B,R,L for top, bottom, right, left
+	 * @param {number[]|number} margin - margin property of pdfMake
+	 * */
 	cell(content, border, margin) {
 		let id = this.line_buffer.length;
 		this.last_border = fPDF.get_border(border);
@@ -54,6 +73,9 @@ class fPDF{
         }
 	}
 
+	/**
+	 * adds empty cells to complete a line and reset buffer.
+	 * */
 	new_line(){
 		//add empty cells
 		if(this.line_buffer.length < this.widths.length)
@@ -70,6 +92,10 @@ class fPDF{
 		this.last_border = [false, false, false, false];
 	}
 
+	/**
+	 * set widths of table and multiply each width by 2.5 to convert cm to points
+	 * @param {number[]} widths - widths of each table cell. if cell should fill the rest of the line use '*'.
+	 * */
 	set_widths(widths){
 		for(let i = 0; i<widths.length; i++)
 			if(typeof widths[i] === 'number')
@@ -77,6 +103,9 @@ class fPDF{
 		this.widths = widths;
 	}
 
+	/**
+	 * clear buffer and start a new table.
+	 * */
 	new_table(){
 		let id = this.body.length;
 		this.new_line();
@@ -96,6 +125,9 @@ class fPDF{
 		this.widths = [];
 	}
 
+	/**
+	 * returns the body property with the footer
+	 * */
 	get_body_as_string(){
 		return {
 			content : this.body,
@@ -103,14 +135,28 @@ class fPDF{
 		}
 	}
 
+	/**
+	 * set font for this pdf
+	 * @param {string} font - string id for font
+	 * */
 	set_font(font){
 		this.font = font;
 	}
 
+	/**
+	 * set the footer to content
+	 * @param {Object} content - pdfMake object for the footer
+	 * */
 	set_footer(content){
         this.footer = content;
 	}
 
+	/**
+	 * @static
+	 * parses a border string to boolean array
+	 * @param {string|number} border - border for this cell. string contains letter T,B,R,L for top, bottom, right, left or 1 for all borders or 0 for no borders
+	 * @return {boolean[]} - borders as boolean in order l,t,r,b
+	 * */
 	static get_border(border){
         let border_l = fPDF.check_border_val('L', border);
         let border_t = fPDF.check_border_val('T', border);
@@ -119,6 +165,15 @@ class fPDF{
         return [border_l, border_t, border_r, border_b];
 	}
 
+	/**
+	 * @static
+	 * parses a string with font_size, weight and color to a pdfMake object
+	 * @param {string} string - string for the content
+	 * @param {number} font_size - font size
+	 * @param {string} weight - weight of the text (bold or italics)
+	 * @param {number[]} color - color of the text as an array of rgb as values from 0 to 255
+	 * @returns {pdfMake} pdfMake object with all wished properties
+	 * */
 	static get_text(string, font_size, weight, color){
 		let bold = typeof weight !== 'undefined' && weight.toLowerCase().indexOf('b') > -1;
 		let italics = typeof weight !== 'undefined' && weight.toLowerCase().indexOf('i') > -1;
@@ -135,13 +190,26 @@ class fPDF{
 		}
 	}
 
-	get_image(path, width){
+	/**
+	 * @static
+	 * parse base64 image to pdfMake object
+	 * @param {string} base64 - base64 of image
+	 * @param {number} width - width of the image
+	 * @returns {pdfMake} pdfMake object for the image
+	 * */
+	static get_image(base64, width){
 		return {
-			image: path,
+			image: base64,
 			width: width
 		}
 	}
 
+	/**
+	 * @static
+	 * parses color array to hex string
+	 * @param {number[]} color - rgb array with values of 0 to 255
+	 * @returns {string} hex color
+	 * */
 	static rgb(color){
 		let r = color[0].toString(16);
 		if(r.length === 1)
@@ -156,12 +224,19 @@ class fPDF{
 		return '#' + r + g + b;
 	}
 
+	/**
+	 * @static
+	 * checks if border is in string
+	 * @param {char} char - char to check for
+	 * @param {string | number} border - border string or number 0,1 to check in
+	 * @returns {boolean} whether char is in border (0 = false, 1 = true)
+	 * */
 	static check_border_val(char, border){
 		if(border !== null)
 			if(typeof border === 'number') {
-        if (border === 1)
-          return true;
-      }else{
+               if (border === 1)
+                  return true;
+            }else{
 				if(border.indexOf(char) > -1)
 					return true;
 			}

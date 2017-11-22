@@ -1,5 +1,18 @@
-
+/**
+ * Line object
+ * @property {string[]} lyrics - [top_line, bottom_line] with lyrics and chords
+ * @property {string[]} annotations - array of all annotaions
+ * @property {number} width - maximum width of lyrics
+ * @property {number} diff_annotations - different annotations per repetition
+ * @property {number} ann_cells - how many annotation cells are defined
+ * @property {boolean} has_annotations - whether this line has annotations
+ * @property {Block} parent - block where this line is in
+ * */
 class Line{
+    /**
+     * @constructor
+     * @param {string} line - string to parse as a line
+     * */
     constructor(line){
         let res = Line.parse_line(line);
         this.lyrics = res[0];
@@ -11,6 +24,12 @@ class Line{
         this.parent = null;
     }
 
+    /**
+     * @static
+     * parses the line string to Line object
+     * @param {string} line - string to parse
+     * @returns {Array} - [[top_line, bottom_line], annotations, max_length, diff_annotations]
+     * */
     static parse_line(line){
         let top_line = '';
         let bottom_line_markup = line.split('|')[0].replace(/(^\s+|\s+$)/g, '');
@@ -43,6 +62,13 @@ class Line{
         return [[top_line, bottom_line_markup], annotations, max(top_line.length, bottom_line.length), diff_annotations];
     }
 
+
+    /**
+     * @static
+     * parse annotations of string
+     * @param {string} line - string to parse
+     * @returns {Array} - [annotations, diff_annotations]
+     * */
     static parse_annotations(line){
         let splitted = line.split('|');
         let annotations = [];
@@ -65,11 +91,23 @@ class Line{
         return [annotations, diff_annotations];
     }
 
+    /**
+     * @static
+     * parses an annotations string to an array if there are different strings for different repetitions
+     * @param {string} a - split array by ';'
+     * @returns {string[]} - array of strings
+     * */
     static parse_array(a){
         a = '[\'' + a.replace(/;/g, '\',\'') + '\']';
         return eval(a);
     }
 
+    /**
+     * @static
+     * strip white spaces from each entry of an array
+     * @param {string[]} a - array to strip
+     * @returns {string[]} stripped strings
+     * */
     static strip_each_entry(a){
         for(let i = 0; i < a.length; i++)
             a[i] = a[i].replace(/(^\s+|\s+$)/g, '');

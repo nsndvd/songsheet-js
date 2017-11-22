@@ -1,9 +1,28 @@
 
+/**
+ * The first and simplest layout covering all important features.
+ * @extends Layout
+ * @see Layout
+ * */
 class SimplestLayout extends Layout{
+
+    /**
+     * @constructor
+     * @param {Object} settings - settings which can be applied to this layout (optional).
+     * @param {string} settings.font - Available fonts are 'ubuntu', 'anonymous', 'roboto'. default is 'ubuntu'
+     * @param {boolean} settings.table - Display tablelines. default is true
+     * @param {boolean} settings.annotations - Display annotations. default is true
+     * @returns {Layout} SimplestLayout - object of SimplestLayout
+     * */
     constructor(settings){
         super(settings);
     }
 
+    /**
+     * generates a pdfMake object for a given Song object.
+     * @param {Song} song - Song object to generate a pdfMake object for.
+     * @returns {pdfMake} json - pdfMake json object
+     * */
     gen(song){
         let that = this;
         this.song = song;
@@ -33,9 +52,14 @@ class SimplestLayout extends Layout{
         return this.pdf.get_body_as_string();
     }
 
+    /**
+     * generates a pdfMake object for a block with a given amount of repetitions
+     * @param {Block} block - Block to print
+     * @param {number} count - amount of repetitions
+     * */
     print_block(block, count){
         //padding top
-        this.add_margin();
+        this.new_table();
 
         // set cell widths
         this.set_widths();
@@ -53,8 +77,12 @@ class SimplestLayout extends Layout{
         }
     }
 
-    print_line(line, border){
-        border = border || '';
+    /**
+     * generates a pdfMake object for a line with a border
+     * @param {Line} line - Line object to print
+     * @param {string} border - string where borders should be displayed: 'B' -> bottom, 'L' -> left, 'T' -> top, 'R' -> right
+     * */
+    print_line(line, border=''){
         let border_ann_1 = this.table ? border+'L' : 0;
         let border_ann = this.table ? 'L' : 0;
         this.pdf.cell(this.parse_markdown_line(line.lyrics[0]), 0);
@@ -63,20 +91,26 @@ class SimplestLayout extends Layout{
         this.pdf.new_line();
         this.pdf.cell(this.parse_markdown_line(line.lyrics[1]), border);
 
-        for(let i = 0; i < this.song.ann_cells; i++){
-            let text = ' ';
-            if(line.annotations.length >= i + 1){
-                if(Array.isArray(line.annotations[i]))
-                    text = line.annotations[i][line.parent.get_printed_counter()];
-                else
-                    text = line.annotations[i];
+        if(this.annotations) {
+            for (let i = 0; i < this.song.ann_cells; i++) {
+                let text = ' ';
+                if (line.annotations.length >= i + 1) {
+                    if (Array.isArray(line.annotations[i]))
+                        text = line.annotations[i][line.parent.get_printed_counter()];
+                    else
+                        text = line.annotations[i];
+                }
+                this.pdf.cell(this.parse_markdown_line(text), border_ann_1);
             }
-            this.pdf.cell(this.parse_markdown_line(text), border_ann_1);
         }
 
         this.pdf.new_line();
     }
 
+    /**
+     * interates through all blocks of a song and generates the pdfMake object
+     * @param {Song} song - Song to print
+     * */
     go_through_blocks_and_print(song){
         let prev_block = new Block('', []);
         let counter = 1;
@@ -104,6 +138,11 @@ class SimplestLayout extends Layout{
             this.write_last_block(prev_block, counter);
     }
 
+    /**
+     * creates the header for a block
+     * @param {Block} block - Block to parse
+     * @param {number} count - repetition amount of this block
+     * */
     write_block_header(block, count){
         let block_header = block.title;
         if(count !== 1)
@@ -115,6 +154,11 @@ class SimplestLayout extends Layout{
         this.pdf.new_line();
     }
 
+    /**
+     * creates the header for a block
+     * @param {Block} block - Block to parse
+     * @param {number} counter - repetition amount of this block
+     * */
     write_last_block(block, counter){
         this.print_block(block, counter);
         this.pdf.cell(' ', 0);

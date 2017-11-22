@@ -1,10 +1,21 @@
 
+/**
+ * compare two integer
+ * @param {number} a - first value
+ * @param {number} b - second value
+ * @return {boolean} a >= b
+ * */
 function max(a, b){
     if(a >= b)
         return a;
     return b;
 }
 
+/**
+ * read text file
+ * @param {string} file - path to file
+ * @returns {string} file content
+ * */
 function readTextFile(file)
 {
     let rawFile = new XMLHttpRequest();
@@ -25,7 +36,6 @@ function readTextFile(file)
 }
 
 let SIMPLEST_LAYOUT = 0;
-let REDUCED_LAYOUT = 1;
 let DEFAULT_FONT = 'ubuntu';
 let FONTS = {
     anonymous: {
@@ -50,6 +60,11 @@ let FONTS = {
 let MARKUP_REG = /(\*[^*]|\*\*|<r>|<b>|<g>)/g;
 let MARKUP_REP_REG = /(\*|<r>|<b>|<g>)/g;
 
+/**
+ * escape regular expressions
+ * @param {string} str - string to escape
+ * @return {string} escaped string
+ * */
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }

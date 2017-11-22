@@ -1,9 +1,20 @@
-
+/**
+ * main parser for the .st document
+ * */
 class SongsheetParser{
+    /**
+     * @constructor
+     * */
     constructor(){
 
     }
 
+    /**
+     * @static
+     * parse string to Song object. default title is 'Song'.
+     * @param {string} string - string of the file to parse
+     * @returns {string[]} [title, artist, bpm, books, order, blocks]
+     * */
     static parse(string){
         let title = 'Song';
         let bpm = undefined;
@@ -99,12 +110,27 @@ class SongsheetParser{
         return [title, artist, bpm, books, order, blocks];
     }
 
+    /**
+     * @static
+     * strip whitespaces of a block to enable indexOf
+     * @param {string} string - string to escape
+     * @returns {string} escaped string
+     * */
     static escape_block(string){
         string = string.toLowerCase().replace(/\[\s+/, '');
         string = string.replace(/\s+:/, ':');
         return string
     }
 
+    /**
+     * get substring of line with offset, match, key_length, separator indecies
+     * @param {string} line - line to get substring from
+     * @param {number} offset - total offset
+     * @param {number} match - match of the key
+     * @param {number} key_length - key length
+     * @param {number} separator - end of value
+     * @returns {string} value of block
+     * */
     static get_stripped_substring(line, offset, match, key_length, separator){
         return line.substr(offset + match + key_length, separator - match - key_length).replace(/(^\s+|\s+$)/g, '');
     }
