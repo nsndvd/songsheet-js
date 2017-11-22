@@ -5,6 +5,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="application/json;">
     <title>Test</title>
 </head>
 <body>
@@ -12,7 +13,7 @@
     <script>
             let gen = new SongsheetGen();
             let txt = `
-            [Title: Wonderwall - Oasis]
+            [Title: Wonderwall; bPM: 100; artist: Oasis;books:fj 4-43,fj3 5555]
 
 [Order: Intro, Verse 1, Verse 2, Verse 1]
 
@@ -28,7 +29,7 @@ That the [Dsus4]fire in your heart is [A7sus4]out,
 [Em7] [G] [Dsus4] [A7sus4]`;
             gen.add_song(txt, {"table": true});
             let res = gen.gen(false);
-            console.log( JSON.stringify(res, null, 4));
+            document.body.innerText = 'var dd = ' + JSON.stringify(res[0], null, 2) + ';';
     </script>
 </body>
 </html>

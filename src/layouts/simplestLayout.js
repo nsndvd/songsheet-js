@@ -6,10 +6,10 @@ class SimplestLayout extends Layout{
 
     gen(song){
         this.song = song;
-        this.pdf.set_font(this.font);
+        //this.pdf.set_font(this.font);
 
-        // write title
-        this.write_title(song.title);
+        // write header
+        this.write_header(song.title, song.artist, song.bpm, song.books);
 
         // iterate over blocks for writing
         this.go_through_blocks_and_print(song);
@@ -43,7 +43,8 @@ class SimplestLayout extends Layout{
         let border_ann_1 = this.table ? border+'L' : 0;
         let border_ann = this.table ? 'L' : 0;
         this.pdf.cell(this.parse_markdown_line(line.lyrics[0]), 0);
-        this.pdf.cell('', border_ann);
+        if(this.song.ann_cells > 0)
+            this.pdf.cell('', border_ann);
         this.pdf.new_line();
         this.pdf.cell(this.parse_markdown_line(line.lyrics[1]), border);
 
@@ -64,16 +65,17 @@ class SimplestLayout extends Layout{
     go_through_blocks_and_print(song){
         let prev_block = new Block('', []);
         let counter = 1;
-
         for(let block of song.get_order()){
             // look forward and count amount of blocks
             // if next is equal increase counter
             // if next is not equal print prev block and
             // set prev_block to curr_block
             let next_block = song.blocks[block];
-            if(prev_block.title === '')
+            if(prev_block === undefined)
                 prev_block = next_block;
-            else if(prev_block.title === next_block.title && next_block.all_diff_printed())
+            else if(prev_block.title === '')
+                prev_block = next_block;
+            else if(next_block !== undefined && prev_block.title === next_block.title && next_block.all_diff_printed())
                 counter ++;
             else{
                 this.print_block(prev_block, counter);
@@ -83,7 +85,8 @@ class SimplestLayout extends Layout{
             }
         }
 
-        this.write_last_block(prev_block, counter);
+        if(prev_block !== undefined)
+            this.write_last_block(prev_block, counter);
     }
 
     write_block_header(block, count){

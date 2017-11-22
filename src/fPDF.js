@@ -8,30 +8,49 @@ class fPDF{
 		this.line_height = 1;
 	}
 
-	cell(text, border) {
+	cell(content, border, margin) {
 		let id = this.line_buffer.length;
-        this.last_border = fPDF.get_border(border);
+		this.last_border = fPDF.get_border(border);
+		content = !Array.isArray(content) && typeof content !== 'string' ? [content] : content;
 
-        this.line_buffer[id] = {
-            text: text,
-            font: this.font,
-            border: this.last_border,
-            preserveLeadingSpaces: true,
-            lineHeight: this.line_height
-        };
+		// if content is just a string
+		if(typeof content === 'string')
+			this.line_buffer[id] = {
+			  text: content,
+			  font: this.font,
+			  border: this.last_border,
+			  preserveLeadingSpaces: true,
+			  lineHeight: this.line_height,
+			  margin: margin
+			};
 
-		// if get text was used unpack it
-		if (Array.isArray(text) && text.length === 1)
-			text = text[0];
-
-        // if text is json
-		if (typeof text === 'object' && !Array.isArray(text)){
-		  	this.line_buffer[id].text = text.text || '';
-        	this.line_buffer[id].fontSize = text.fontSize;
-			this.line_buffer[id].bold = text.bold;
-        	this.line_buffer[id].italics = text.italics;
-        	this.line_buffer[id].color = text.color;
-		}
+		// if content is array
+        else if (typeof content === 'object' && Array.isArray(content)){
+			let line = [];
+			for(let elem of content){
+				console.log(elem);
+				// if input is just text
+				if(typeof elem === 'string')
+					line.push({
+                        text: elem,
+                        font: this.font,
+                        preserveLeadingSpaces: true,
+                        lineHeight: this.line_height,
+						margin: margin
+                    });
+				// if input is an image
+				else if(elem.image){
+					line.push(elem);
+				}
+				// if input is get_text object
+				else{
+                    elem.text = elem.text || '';
+                    elem.margin = margin;
+                    line.push(elem);
+				}
+			}
+			this.line_buffer[id] = {columns: line, border: this.last_border};
+        }
 	}
 
 	new_line(){
@@ -41,7 +60,7 @@ class fPDF{
 				this.line_buffer[this.line_buffer.length] = {
 					text: ' ',
 					border: this.last_border,
-          			preserveLeadingSpaces: true,
+					preserveLeadingSpaces: true,
 					lineHeight: this.line_height
 				};
 
@@ -53,7 +72,7 @@ class fPDF{
 	set_widths(widths){
 		for(let i = 0; i<widths.length; i++)
 			if(typeof widths[i] === 'number')
-        widths[i] = widths[i] * 2.5;
+        		widths[i] = widths[i] * 2.5;
 		this.widths = widths;
 	}
 
@@ -107,6 +126,13 @@ class fPDF{
 			color: color,
       		preserveLeadingSpaces: true,
             lineHeight: this.line_height
+		}
+	}
+
+	get_image(path, width){
+		return {
+			image: path,
+			width: width
 		}
 	}
 

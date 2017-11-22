@@ -6,30 +6,62 @@ class SongsheetParser{
 
     static parse(string){
         let title = 'Song';
+        let bpm = undefined;
+        let artist = undefined;
+        let books = [];
         let blocks = [];
         let order = [];
         let default_order = [];
         let curr_block_title = '';
         let lines = [];
+        let info_keys = ['title', 'bpm', 'artist', 'books'];
+        let infos_regex = new RegExp('('+info_keys.join('|')+')');
 
         for(let line of string.split(/\r?\n/)){
             //ignore empty lines
             if(!/\w/.test(line))
                 continue;
 
-            let offset_title = SongsheetParser.escape_block(line).indexOf('[title:');
-            let offset_order = SongsheetParser.escape_block(line).indexOf('[order:');
-            let offset_block = SongsheetParser.escape_block(line).indexOf('[block:');
-            let end = line.indexOf(']');
+          let offset_infos = SongsheetParser.escape_block(line).search(infos_regex);
+          let offset_order = SongsheetParser.escape_block(line).indexOf('[order:');
+          let offset_block = SongsheetParser.escape_block(line).indexOf('[block:');
+          let end = line.indexOf(']');
 
             // force new lines after title and order
-            if(offset_title !== -1 && offset_order !== -1)
+            if(offset_infos !== -1 && offset_order !== -1)
                 throw Error('Meta data must be seperated in lines');
 
             // parse title
-            if(offset_title !== -1){
-                end = end - offset_title - 7;
-                title = line.substr(offset_title + 7, end).replace(/(^\s+|\s+$)/g, '');
+            if(offset_infos !== -1){
+                let match;
+                let str = SongsheetParser.escape_block(line);
+                let offset = 0;
+                while((match = str.search(infos_regex)) >= 0 ){
+                  let key = str.charAt(match) + str.charAt(match+1);
+                  let key_length;
+                  let separator = str.indexOf(';', match) > 0 ? str.indexOf(';', match) : str.indexOf(']', match);
+
+                  switch(key){
+                    case 'ti':
+                      key_length = 6;
+                      title = SongsheetParser.get_stripped_substring(line, offset, match, key_length, separator);
+                      break;
+                    case 'bp':
+                      key_length = 4;
+                      bpm = SongsheetParser.get_stripped_substring(line, offset, match, key_length, separator);
+                      break;
+                    case 'ar':
+                      key_length = 7;
+                      artist = SongsheetParser.get_stripped_substring(line, offset, match, key_length, separator);
+                      break;
+                    case 'bo':
+                      key_length = 6;
+                      books = SongsheetParser.get_stripped_substring(line, offset, match, key_length, separator).split(',');
+                      break;
+                  }
+                  str = SongsheetParser.escape_block(line.substr(offset+separator+1)); //remove all before first separator
+                  offset += separator+1;
+                }
                 continue;
             }
 
@@ -64,12 +96,16 @@ class SongsheetParser{
         if(order.length === 0)
             order = default_order;
 
-        return [title, order, blocks];
+        return [title, artist, bpm, books, order, blocks];
     }
 
     static escape_block(string){
         string = string.toLowerCase().replace(/\[\s+/, '');
         string = string.replace(/\s+:/, ':');
         return string
+    }
+
+    static get_stripped_substring(line, offset, match, key_length, separator){
+        return line.substr(offset + match + key_length, separator - match - key_length).replace(/(^\s+|\s+$)/g, '');
     }
 }
