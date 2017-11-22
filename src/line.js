@@ -28,7 +28,7 @@ class Line{
      * @static
      * parses the line string to Line object
      * @param {string} line - string to parse
-     * @returns {Object[]} - [[top_line, bottom_line], annotations, max_length, diff_annotations]
+     * @returns {Array} - [[top_line, bottom_line], annotations, max_length, diff_annotations]
      * */
     static parse_line(line){
         let top_line = '';

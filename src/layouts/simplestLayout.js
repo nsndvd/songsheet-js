@@ -8,13 +8,11 @@ class SimplestLayout extends Layout{
 
     /**
      * @constructor
-     * create a new layout object with settings.
      * @param {Object} settings - settings which can be applied to this layout (optional).
      * @param {string} settings.font - Available fonts are 'ubuntu', 'anonymous', 'roboto'. default is 'ubuntu'
      * @param {boolean} settings.table - Display tablelines. default is true
      * @param {boolean} settings.annotations - Display annotations. default is true
-     * @returns {Object} SimplestLayout - object of SimplestLayout
-     * @see Layout
+     * @returns {Layout} SimplestLayout - object of SimplestLayout
      * */
     constructor(settings){
         super(settings);
@@ -22,8 +20,8 @@ class SimplestLayout extends Layout{
 
     /**
      * generates a pdfMake object for a given Song object.
-     * @param {Object} song - Song object to generate a pdfMake object for.
-     * @returns {Object} json - pdfMake json object
+     * @param {Song} song - Song object to generate a pdfMake object for.
+     * @returns {pdfMake} json - pdfMake json object
      * */
     gen(song){
         let that = this;
@@ -56,7 +54,7 @@ class SimplestLayout extends Layout{
 
     /**
      * generates a pdfMake object for a block with a given amount of repetitions
-     * @param {Object} block - Block to print
+     * @param {Block} block - Block to print
      * @param {number} count - amount of repetitions
      * */
     print_block(block, count){
@@ -81,7 +79,7 @@ class SimplestLayout extends Layout{
 
     /**
      * generates a pdfMake object for a line with a border
-     * @param {Object} line - Line object to print
+     * @param {Line} line - Line object to print
      * @param {string} border - string where borders should be displayed: 'B' -> bottom, 'L' -> left, 'T' -> top, 'R' -> right
      * */
     print_line(line, border=''){
@@ -111,7 +109,7 @@ class SimplestLayout extends Layout{
 
     /**
      * interates through all blocks of a song and generates the pdfMake object
-     * @param {Object} song - Song to print
+     * @param {Song} song - Song to print
      * */
     go_through_blocks_and_print(song){
         let prev_block = new Block('', []);
@@ -142,7 +140,7 @@ class SimplestLayout extends Layout{
 
     /**
      * creates the header for a block
-     * @param {Object} block - Block to parse
+     * @param {Block} block - Block to parse
      * @param {number} count - repetition amount of this block
      * */
     write_block_header(block, count){
@@ -158,7 +156,7 @@ class SimplestLayout extends Layout{
 
     /**
      * creates the header for a block
-     * @param {Object} block - Block to parse
+     * @param {Block} block - Block to parse
      * @param {number} counter - repetition amount of this block
      * */
     write_last_block(block, counter){

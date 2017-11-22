@@ -4,7 +4,6 @@
 class SongsheetParser{
     /**
      * @constructor
-     * empty constructor because all methods are static
      * */
     constructor(){
 

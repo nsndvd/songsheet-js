@@ -11,7 +11,6 @@
 class fPDF{
 	/**
 	 * @constructor
-	 * init fPDF
 	 * */
 	constructor(){
 		this.widths = [];
@@ -173,7 +172,7 @@ class fPDF{
 	 * @param {number} font_size - font size
 	 * @param {string} weight - weight of the text (bold or italics)
 	 * @param {number[]} color - color of the text as an array of rgb as values from 0 to 255
-	 * @returns {Object} pdfMake object with all wished properties
+	 * @returns {pdfMake} pdfMake object with all wished properties
 	 * */
 	static get_text(string, font_size, weight, color){
 		let bold = typeof weight !== 'undefined' && weight.toLowerCase().indexOf('b') > -1;
@@ -196,7 +195,7 @@ class fPDF{
 	 * parse base64 image to pdfMake object
 	 * @param {string} base64 - base64 of image
 	 * @param {number} width - width of the image
-	 * @returns {Object} pdfMake object for the image
+	 * @returns {pdfMake} pdfMake object for the image
 	 * */
 	static get_image(base64, width){
 		return {

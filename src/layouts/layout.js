@@ -10,12 +10,11 @@
 class Layout{
     /**
      * @constructor
-     * create a new layout object with settings.
      * @param {Object} settings - settings which can be applied to this layout (optional).
      * @param {string} settings.font - Available fonts are 'ubuntu', 'anonymous', 'roboto'. default is 'ubuntu'
      * @param {boolean} settings.table - Display tablelines. default is true
      * @param {boolean} settings.annotations - Display annotations. default is true
-     * @returns {Object} SimplestLayout - object of SimplestLayout
+     * @returns {Layout} SimplestLayout - object of SimplestLayout
      * */
     constructor(settings){
         if(new.target === Layout)
@@ -40,8 +39,8 @@ class Layout{
     }
 
     /**
-     * @abstract
      * generates a pdfMake object for a given Song object.
+     * @abstract
      * @param {Object} song - Song object to generate a pdfMake object for.
      * */
     gen(song){
@@ -50,8 +49,8 @@ class Layout{
     }
 
     /**
-     * @abstract
      * generates a pdfMake object for a block with a given amount of repetitions
+     * @abstract
      * @param {Object} block - Block to print
      * @param {number} counter - amount of repetitions
      * */
@@ -89,7 +88,7 @@ class Layout{
      * <g> - green
      * <b> - blue
      * @param {string} string - string to parse
-     * @retruns {Line[]} line - returns the string as an array of text elements in pdfMake format
+     * @returns {Line[]} line - returns the string as an array of text elements in pdfMake format
      */
     parse_markdown_line(string){
         let line = [];

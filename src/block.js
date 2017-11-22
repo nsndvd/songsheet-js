@@ -9,10 +9,9 @@
  * */
 class Block{
     /**
-     * Create a block
      * @constructor
      * @param {string} title - Title of this Block
-     * @param {Object} lines - Array of Line objects
+     * @param {Line[]} lines - Array of Line objects
      * */
     constructor(title, lines){
         this.title = title;
@@ -32,7 +31,7 @@ class Block{
 
     /**
      * returns current counter and increase it.
-     * @returns current counter
+     * @returns {number} current counter
      * */
     get_printed_counter(){
         this.printed++;
