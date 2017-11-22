@@ -9,10 +9,7 @@ class SongsheetGen{
         this.songs = {};
     }
 
-    gen(download){
-        if(typeof download === 'undefined')
-            download = true;
-        download = download;
+    gen(download=true){
         let res = [];
         for(let song in this.songs){
             if(this.songs.hasOwnProperty(song)) {
@@ -29,8 +26,24 @@ class SongsheetGen{
         this.songs[song.title] = song;
     };
 
-    get_song(song_name){
-        return this.songs[song_name]
+    remove_song(song_title){
+        delete this.songs[song_title];
+    }
+
+    get_song(song_title){
+        return this.songs[song_title]
     };
+
+    get_available_fonts(){
+        return FONTS;
+    }
+
+    get_font_for_song(song_title){
+        return this.songs[song_title].layout.font;
+    }
+
+    get_songs(){
+        return this.songs;
+    }
 }
 
