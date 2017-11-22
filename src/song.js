@@ -1,4 +1,6 @@
-
+/**
+ * 
+ * */
 class Song{
     constructor(string, layout, layout_settings){
         this.lyrics_width = -1;

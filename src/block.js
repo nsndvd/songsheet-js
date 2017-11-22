@@ -1,5 +1,19 @@
-
+/**
+ * Block class
+ * @property {string} title - Title of block
+ * @property {Object} lines - Array of Line objects
+ * @property {number} annotation_cells - how many annotation cells are needed
+ * @property {number} lyrics_width - maximum width of lyrics
+ * @property {number} max_diff_annotations - maximum different annotations per repetition
+ * @property {number} printed - how often a block is printed
+ * */
 class Block{
+    /**
+     * Create a block
+     * @constructor
+     * @param {string} title - Title of this Block
+     * @param {Object} lines - Array of Line objects
+     * */
     constructor(title, lines){
         this.title = title;
         this.lines = lines;
@@ -16,11 +30,19 @@ class Block{
         }
     }
 
+    /**
+     * returns current counter and increase it.
+     * @returns current counter
+     * */
     get_printed_counter(){
         this.printed++;
         return this.printed - 1;
     }
 
+    /**
+     * returns true if all different annotations are printed
+     * @return {boolean} this.printed === this.max_diff_annotations
+     * */
     all_diff_printed(){
         return this.printed === this.max_diff_annotations;
     }

@@ -1,5 +1,22 @@
-
+/**
+ * abstract Layout class. Basic constructor settings and helper classes.
+ * @property {Object} pdf - fPDF object
+ * @property {string} font - font to use for this layout
+ * @property {number} font_size - default font-size
+ * @property {boolean} table - whether to print table lines. default is true
+ * @property {boolean} annotations - whether to print annotations. default is true
+ * @property {Object} song - song which has this layout
+ * */
 class Layout{
+    /**
+     * @constructor
+     * create a new layout object with settings.
+     * @param {Object} settings - settings which can be applied to this layout (optional).
+     * @param {string} settings.font - Available fonts are 'ubuntu', 'anonymous', 'roboto'. default is 'ubuntu'
+     * @param {boolean} settings.table - Display tablelines. default is true
+     * @param {boolean} settings.annotations - Display annotations. default is true
+     * @returns {Object} SimplestLayout - object of SimplestLayout
+     * */
     constructor(settings){
         if(new.target === Layout)
             throw new TypeError('this Class is an abstract class.');
@@ -7,8 +24,8 @@ class Layout{
         this.pdf = new fPDF();
         this.font = DEFAULT_FONT;
         this.font_size = 10;
-        this.table = false;
-        this.annotations = false;
+        this.table = true;
+        this.annotations = true;
         this.song = null;
 
         if(settings && 'table' in settings)
@@ -22,34 +39,57 @@ class Layout{
         pdfMake.fonts = FONTS;
     }
 
+    /**
+     * @abstract
+     * generates a pdfMake object for a given Song object.
+     * @param {Object} song - Song object to generate a pdfMake object for.
+     * */
     gen(song){
         if(new.target === Layout)
             throw new TypeError('this Class is an abstract class.');
     }
 
+    /**
+     * @abstract
+     * generates a pdfMake object for a block with a given amount of repetitions
+     * @param {Object} block - Block to print
+     * @param {number} counter - amount of repetitions
+     * */
     print_block(block, counter){
         if(new.target === Layout)
             throw new TypeError('this Class is an abstract class.');
     }
 
+    /**
+     * generates a pdfMake object for a line with a border
+     * @param {Object} line - Line object to print
+     * @abstract
+     * */
     print_line(line){
         if(new.target === Layout)
             throw new TypeError('this Class is an abstract class.');
     }
 
-    set_font(font){
-        font = font || DEFAULT_FONT;
+    /**
+     * set font for this layout.
+     * @param {string} font - Font to set
+     * */
+    set_font(font=DEFAULT_FONT){
         for(let f in FONTS)
             if(font === f)
                 this.font = font;
     }
 
     /**
+     * Parse markdown string to pdfMake json.
+     * Options are:
      * * - italic
      * ** - bold
      * <r> - red
      * <g> - green
      * <b> - blue
+     * @param {string} string - string to parse
+     * @retruns {Line[]} line - returns the string as an array of text elements in pdfMake format
      */
     parse_markdown_line(string){
         let line = [];
@@ -88,14 +128,21 @@ class Layout{
         return line;
     }
 
+    /**
+     * parse title, artist, bpm and books to a pdfMake json.
+     * @param {string} title - title of the song as a string
+     * @param {string} artist - artist as a string
+     * @param {string} bpm - bpm as a string
+     * @param {string[]} books - array of books where the song is from
+     * */
     write_header(title, artist, bpm, books){
         this.pdf.set_widths(['*', 11/2.5, 10, 11/2.5, 40/2.5]);
         this.pdf.cell(fPDF.get_text(title, this.font_size + 2), 0);
 
-        this.pdf.cell(this.pdf.get_image(bpm_image, 16), 0);
+        this.pdf.cell(fPDF.get_image(bpm_image, 16), 0);
         this.pdf.cell(fPDF.get_text(bpm, this.font_size - 2), 0, [0,3]);
 
-        this.pdf.cell(this.pdf.get_image(books_image, 16), 0);
+        this.pdf.cell(fPDF.get_image(books_image, 16), 0);
         this.pdf.cell(fPDF.get_text(books.join('\n'), this.font_size - 2), 0);
         this.pdf.new_table();
 
@@ -103,11 +150,9 @@ class Layout{
         this.pdf.new_table();
     }
 
-    add_margin(){
-        this.pdf.cell(' ', 0);
-        this.pdf.new_table();
-    }
-
+    /**
+     * set widths of the tables with respect to amount of annotation cells
+     * */
     set_widths(){
         let width_lyr = 2 * this.song.lyrics_width;
         let width_ann = this.song.ann_cells > 0 ? (190 - width_lyr) / this.song.ann_cells : 0;
@@ -123,13 +168,26 @@ class Layout{
     }
 }
 
+/**
+ * State class which saves the current state of text formats while parsing a markdown string
+ * @property {boolean} is_bold - current text is bold
+ * @property {boolean} is_italic - current text is italic
+ * @property {number[]} color - current color of the text as an array with values 0 to 255
+ * */
 class State{
+    /**
+     * @constructor
+     * */
     constructor(){
         this.is_bold = false;
         this.is_italic = false;
         this.color = [0, 0, 0];
     }
 
+    /**
+     * updates the current state by the matched string
+     * @param {string} match - update the current state by the matched string
+     * */
     update(match){
         if(/\*[^*]/.test(match))
             this.is_italic = !this.is_italic;

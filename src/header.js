@@ -1,11 +1,14 @@
 /**
  *
- * Songsheet library v. 1.0.0
+ * Songsheet
  *
  * features:
- *      - simplestLayout
  *      - markdown
  *      - multiple annotations
+ *      - bpm, artist, books
+ *      - footer with page numbers
  *
  * All rights reserved by Jannes Magnusson (contact@webdesign-mag.de)
+ * @author Jannes Magnusson
+ * @version v1.3.0
  */
