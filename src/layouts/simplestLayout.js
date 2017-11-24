@@ -59,7 +59,7 @@ class SimplestLayout extends Layout{
      * */
     print_block(block, count){
         //padding top
-        this.new_table();
+        this.pdf.new_table();
 
         // set cell widths
         this.set_widths();
