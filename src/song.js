@@ -17,7 +17,7 @@ class Song{
      * @param {number} layout - layout id (SimplestLayout = 0)
      * @param {Object} layout_settings - see Layout constructor
      * */
-    constructor(string, layout, layout_settings){
+    constructor(string, layout=null, layout_settings){
         this.lyrics_width = -1;
         this.ann_cells = 0;
         this.blocks = {};
@@ -31,10 +31,7 @@ class Song{
         this.set_blocks(res[5]);
         this.order = res[4];
 
-        if(this.layout === REDUCED_LAYOUT)
-            this.layout = new ReducedLayout(layout_settings);
-        else
-            this.layout = new SimplestLayout(layout_settings);
+        this.layout = new SimplestLayout(layout_settings);
     }
 
     /**
