@@ -29,7 +29,7 @@ class SimplestLayout extends Layout{
         this.pdf.set_font(this.font);
         this.pdf.set_footer(function (currPage, pageCount){
             let text = fPDF.get_text('erstellt mit Songsheet '+currPage+ ' von '+pageCount, 8, undefined, [100, 100, 100]);
-            text.width = 130;
+            text.width = 150;
             text.font = that.pdf.font;
             text.margin = [2, 1];
             return {
@@ -155,13 +155,12 @@ class SimplestLayout extends Layout{
     }
 
     /**
-     * creates the header for a block
+     * print the last block
      * @param {Block} block - Block to parse
      * @param {number} counter - repetition amount of this block
      * */
     write_last_block(block, counter){
         this.print_block(block, counter);
-        this.pdf.cell(' ', 0);
         this.pdf.new_table();
     }
 }
