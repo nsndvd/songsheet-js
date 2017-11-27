@@ -39,7 +39,7 @@ class fPDF{
 		if(typeof content === 'string')
 			this.line_buffer[id] = {
 			  text: content,
-			  font: this.font,
+			  //font: this.font,
 			  border: this.last_border,
 			  preserveLeadingSpaces: true,
 			  lineHeight: this.line_height,
@@ -54,7 +54,6 @@ class fPDF{
 				if(typeof elem === 'string')
 					line.push({
                         text: elem,
-                        font: this.font,
                         preserveLeadingSpaces: true,
                         lineHeight: this.line_height,
 						margin: margin
@@ -66,7 +65,6 @@ class fPDF{
 				// if input is get_text object
 				else{
                     elem.text = elem.text || '';
-                    //elem.font = this.font;
                     elem.margin = margin;
                     line.push(elem);
 				}
@@ -80,7 +78,6 @@ class fPDF{
 	 * */
 	new_line(){
 		//add empty cells
-        console.log(this.line_buffer.length < this.widths.length, this.line_buffer, this.widths, this.line_buffer.length, this.widths.length);
 		if(this.line_buffer.length < this.widths.length){
 			for(let i = this.line_buffer.length; i < this.widths.length; i++){
 				this.line_buffer[this.line_buffer.length] = {
@@ -91,7 +88,7 @@ class fPDF{
 				};
 			}
 		}
-		console.log(this.line_buffer.length < this.widths.length, this.line_buffer, this.widths);
+
 		this.table_buffer[this.table_buffer.length] = this.line_buffer;
 		this.line_buffer = [];
 		this.last_border = [false, false, false, false];

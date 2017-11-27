@@ -138,10 +138,16 @@ class Layout{
         this.pdf.set_widths(['*', 11/2.5, 10, 11/2.5, 40/2.5]);
         this.pdf.cell(fPDF.get_text(title, this.font_size + 2), 0);
 
-        this.pdf.cell(fPDF.get_image(bpm_image, 16), 0);
+        if(bpm !== undefined)
+            this.pdf.cell(fPDF.get_image(bpm_image, 16), 0);
+        else
+            this.pdf.cell(fPDF.get_text(' ', this.font_size), 0);
         this.pdf.cell(fPDF.get_text(bpm, this.font_size - 2), 0, [0,3]);
 
-        this.pdf.cell(fPDF.get_image(books_image, 16), 0);
+        if(books !== undefined && books.length > 0)
+            this.pdf.cell(fPDF.get_image(books_image, 16), 0);
+        else
+            this.pdf.cell(fPDF.get_text(' ', this.font_size), 0);
         this.pdf.cell(fPDF.get_text(books.join('\n'), this.font_size - 2), 0);
         this.pdf.new_table();
 
