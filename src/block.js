@@ -27,6 +27,10 @@ class Block{
             this.annotation_cells = max(this.annotation_cells, line.ann_cells);
             this.max_diff_annotations = max(this.max_diff_annotations, line.diff_annotations);
         }
+
+        if(title==='str 1'){
+            console.log(this);
+        }
     }
 
     /**

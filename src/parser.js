@@ -98,8 +98,9 @@ class SongsheetParser{
                 default_order[default_order.length] = curr_block_title;
             }
             // parse block
-            else
+            else{
                 lines[lines.length] = new Line(line);
+            }
         }
 
         blocks[blocks.length] = new Block(curr_block_title, lines);

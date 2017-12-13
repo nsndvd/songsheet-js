@@ -44,7 +44,7 @@ class Line{
         let end = bottom_line.indexOf(']');
         let len = end - offset;
 
-        //line with has chord
+        //line with chord
         if(offset !== -1 && end !== -1){
           let i = 0;
           while(offset !== -1 && end !== -1){

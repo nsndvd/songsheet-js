@@ -39,7 +39,6 @@ class fPDF{
 		if(typeof content === 'string')
 			this.line_buffer[id] = {
 			  text: content,
-			  //font: this.font,
 			  border: this.last_border,
 			  preserveLeadingSpaces: true,
 			  lineHeight: this.line_height,
