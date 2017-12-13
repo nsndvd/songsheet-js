@@ -7,6 +7,7 @@
  * @property {Object} footer - function or object for the footer (see pdfMake)
  * @property {string[]} last_border - the last border applied to a cell
  * @property {number} line_height - line height of this document
+ * @property {string} font - font of the pdf. Default is 'ubuntu'
  * */
 class fPDF{
 	/**
@@ -20,6 +21,7 @@ class fPDF{
 		this.footer = undefined;
 		this.last_border = null;
 		this.line_height = 1;
+		this.font = 'ubuntu';
 	}
 
 	/**
@@ -37,7 +39,7 @@ class fPDF{
 		if(typeof content === 'string')
 			this.line_buffer[id] = {
 			  text: content,
-			  font: this.font,
+			  //font: this.font,
 			  border: this.last_border,
 			  preserveLeadingSpaces: true,
 			  lineHeight: this.line_height,
@@ -52,7 +54,6 @@ class fPDF{
 				if(typeof elem === 'string')
 					line.push({
                         text: elem,
-                        font: this.font,
                         preserveLeadingSpaces: true,
                         lineHeight: this.line_height,
 						margin: margin
@@ -64,7 +65,6 @@ class fPDF{
 				// if input is get_text object
 				else{
                     elem.text = elem.text || '';
-                    elem.font = this.font;
                     elem.margin = margin;
                     line.push(elem);
 				}
@@ -78,14 +78,16 @@ class fPDF{
 	 * */
 	new_line(){
 		//add empty cells
-		if(this.line_buffer.length < this.widths.length)
-			for(let i = 0; i <= this.widths.length - this.line_buffer.length; i++)
+		if(this.line_buffer.length < this.widths.length){
+			for(let i = this.line_buffer.length; i < this.widths.length; i++){
 				this.line_buffer[this.line_buffer.length] = {
 					text: ' ',
 					border: this.last_border,
 					preserveLeadingSpaces: true,
 					lineHeight: this.line_height
 				};
+			}
+		}
 
 		this.table_buffer[this.table_buffer.length] = this.line_buffer;
 		this.line_buffer = [];
@@ -120,6 +122,8 @@ class fPDF{
 
 		if(this.widths.length > 0)
 			this.body[id].table.widths = this.widths;
+		else
+            this.body[id].table.widths = ['*'];
 
 		this.table_buffer = [];
 		this.widths = [];
@@ -131,7 +135,11 @@ class fPDF{
 	get_body_as_string(){
 		return {
 			content : this.body,
-			footer: this.footer
+			footer: this.footer,
+			defaultStyle: {
+				font: this.font
+				//font: 'Roboto'
+			}
 		}
 	}
 
