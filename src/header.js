@@ -10,5 +10,5 @@
  *
  * All rights reserved by Jannes Magnusson (contact@webdesign-mag.de)
  * @author Jannes Magnusson
- * @version v1.3.1
+ * @version v1.3.3
  */
