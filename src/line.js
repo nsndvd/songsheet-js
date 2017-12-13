@@ -44,12 +44,13 @@ class Line{
         let end = bottom_line.indexOf(']');
         let len = end - offset;
 
-        //TODO: solution for not forcing to have a chord
-        let i = 0;
-        while(offset !== -1 && end !== -1){
+        //line with has chord
+        if(offset !== -1 && end !== -1){
+          let i = 0;
+          while(offset !== -1 && end !== -1){
             //add spaces
             if(offset - old_offset > 0)
-                top_line += new Array(offset - old_offset + 1).join(' ');
+              top_line += new Array(offset - old_offset + 1).join(' ');
 
             top_line += bottom_line.substr(offset + 1, len - 1).replace(/(^\s+|\s+$)/g, '') + ' ';
             bottom_line = bottom_line.substr(0, offset) + bottom_line.substr(end + 1);
@@ -58,7 +59,9 @@ class Line{
             offset = bottom_line.indexOf('[');
             end = bottom_line.indexOf(']');
             len = end - offset;
+          }
         }
+
         return [[top_line, bottom_line_markup], annotations, max(top_line.length, bottom_line.length), diff_annotations];
     }
 

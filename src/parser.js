@@ -119,7 +119,7 @@ class SongsheetParser{
     static escape_block(string){
         string = string.toLowerCase().replace(/\[\s+/, '');
         string = string.replace(/\s+:/, ':');
-        return string
+        return string;
     }
 
     /**

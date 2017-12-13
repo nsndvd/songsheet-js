@@ -9,7 +9,7 @@
     <title>Test</title>
 </head>
 <body>
-    <script src="songsheet.min.js"></script>
+    <script src="songsheet.js"></script>
     <script>
             let gen = new SongsheetGen();
             let txt = `
@@ -23,12 +23,12 @@ That they're [Dsus4]gonna throw it back to [A7sus4]you
 
 [Block : Verse 2]
 [Em7] Back beat, the [G]word is on the street
-That the [Dsus4]fire in your heart is [A7sus4]out,
+That the fire in your heart is out,
 
 [Block : Intro]
 [Em7] [G] [Dsus4] [A7sus4]`;
             gen.add_song(txt, {"table": true});
-            let res = gen.gen(false);
+            let res = gen.gen(true);
             document.body.innerHTML = '<img src="images/logo.jpg"><br>var dd = ' + JSON.stringify(res[0], null, 2) + ';';
     </script>
 </body>
