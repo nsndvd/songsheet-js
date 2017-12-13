@@ -49,13 +49,7 @@ let FONTS = {
         bold: 'UbuntuMono-B.ttf',
         italics: 'UbuntuMono-RI.ttf',
         bolditalics: 'UbuntuMono-BI.ttf',
-    },
-    roboto: {
-        normal: 'Roboto-Regular.ttf',
-        bold: 'Roboto-Medium.ttf',
-        italics: 'Roboto-Italic.ttf',
-        bolditalics: 'Roboto-MediumItalic.ttf',
-    },
+    }
 };
 let MARKUP_REG = /(\*[^*]|\*\*|<r>|<b>|<g>)/g;
 let MARKUP_REP_REG = /(\*|<r>|<b>|<g>)/g;
