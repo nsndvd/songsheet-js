@@ -26,7 +26,7 @@ class SongsheetParser{
         let curr_block_title = '';
         let lines = [];
         let info_keys = ['title', 'bpm', 'artist', 'books'];
-        let infos_regex = new RegExp('('+info_keys.join('|')+')');
+        let infos_regex = new RegExp('[('+info_keys.join('|')+').*]');
 
         for(let line of string.split(/\r?\n/)){
             //ignore empty lines
@@ -43,7 +43,7 @@ class SongsheetParser{
                 throw Error('Meta data must be seperated in lines');
 
             // parse title
-            if(offset_infos !== -1){
+            if(offset_infos !== -1 && end !== -1){
                 let match;
                 let str = SongsheetParser.escape_block(line);
                 let offset = 0;
