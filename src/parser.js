@@ -25,15 +25,16 @@ class SongsheetParser{
         let default_order = [];
         let curr_block_title = '';
         let lines = [];
-        let info_keys = ['title', 'bpm', 'artist', 'books'];
-        let infos_regex = new RegExp('[('+info_keys.join('|')+').*]');
+        let infos_regex = /\[\s*?(title|bpm|artist|books).*\]/g;
+        let infos_regex_without = /(title|bpm|artist|books)/g;
 
         for(let line of string.split(/\r?\n/)){
+
             //ignore empty lines
             if(!/\w/.test(line))
                 continue;
 
-          let offset_infos = SongsheetParser.escape_block(line).search(infos_regex);
+          let offset_infos = SongsheetParser.escape_block(line).search(infos_regex);    // first with brackets in case only keys...
           let offset_order = SongsheetParser.escape_block(line).indexOf('[order:');
           let offset_block = SongsheetParser.escape_block(line).indexOf('[block:');
           let end = line.indexOf(']');
@@ -47,7 +48,7 @@ class SongsheetParser{
                 let match;
                 let str = SongsheetParser.escape_block(line);
                 let offset = 0;
-                while((match = str.search(infos_regex)) >= 0 ){
+                while((match = str.search(infos_regex_without)) >= 0 ){
                   let key = str.charAt(match) + str.charAt(match+1);
                   let key_length;
                   let separator = str.indexOf(';', match) > 0 ? str.indexOf(';', match) : str.indexOf(']', match);
