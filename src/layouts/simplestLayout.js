@@ -70,7 +70,7 @@ class SimplestLayout extends Layout{
         // write block
         for(let i = 0; i < block.lines.length; i++){
             let line = block.lines[i];
-            if(/\w/.test(line.lyrics[1]) && i < block.lines.length - 1)
+            if((/\w/.test(line.lyrics[1]) || /\w/.test(line.lyrics[0])) && i < block.lines.length - 1)
                 this.print_line(line);
             else if(/\w/.test(line.lyrics[1]) || /\w/.test(line.lyrics[0]))
                 this.print_line(line, 'B')

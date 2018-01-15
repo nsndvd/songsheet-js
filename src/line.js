@@ -39,7 +39,8 @@ class Line{
         let annotations = res[0];
         let diff_annotations = res[1];
 
-        let old_offset = 0;
+        let len_top_line = 0;
+        let b_l_spaces = '';
         let offset = bottom_line.indexOf('[');
         let end = bottom_line.indexOf(']');
         let len = end - offset;
@@ -49,13 +50,18 @@ class Line{
           let i = 0;
           while(offset !== -1 && end !== -1){
             //add spaces
-            if(offset - old_offset > 0)
-              top_line += new Array(offset - old_offset + 1).join(' ');
+            if(offset - len_top_line > 0)
+              top_line += new Array(offset - len_top_line + 1).join(' ');
+            //TODO search solution for spaces in bottom_line_markup
+            else if(offset - len_top_line < 0){
+                b_l_spaces = new Array(len_top_line - offset + 1).join(' ');
+            }
 
             top_line += bottom_line.substr(offset + 1, len - 1).replace(/(^\s+|\s+$)/g, '') + ' ';
             bottom_line = bottom_line.substr(0, offset) + bottom_line.substr(end + 1);
 
-            old_offset = top_line.length;
+            b_l_spaces = '';
+            len_top_line = top_line.length;
             offset = bottom_line.indexOf('[');
             end = bottom_line.indexOf(']');
             len = end - offset;
