@@ -52,7 +52,7 @@ class Line{
             //add spaces
             if(offset - len_top_line > 0)
               top_line += new Array(offset - len_top_line + 1).join(' ');
-            //TODO search solution for spaces in bottom_line_markup
+            //TODO solution for spaces in bottom_line_markup
             else if(offset - len_top_line < 0){
                 b_l_spaces = new Array(len_top_line - offset + 1).join(' ');
             }

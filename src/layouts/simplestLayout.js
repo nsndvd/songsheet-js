@@ -73,8 +73,10 @@ class SimplestLayout extends Layout{
             if((/\w/.test(line.lyrics[1]) || /\w/.test(line.lyrics[0])) && i < block.lines.length - 1)
                 this.print_line(line);
             else if(/\w/.test(line.lyrics[1]) || /\w/.test(line.lyrics[0]))
-                this.print_line(line, 'B')
+                this.print_line(line, 'B');
         }
+
+        block.increase_printed_counter();
     }
 
     /**
@@ -100,6 +102,8 @@ class SimplestLayout extends Layout{
                     else
                         text = line.annotations[i];
                 }
+
+                text = text || "";
                 this.pdf.cell(this.parse_markdown_line(text), border_ann_1);
             }
         }

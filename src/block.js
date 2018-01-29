@@ -34,12 +34,18 @@ class Block{
     }
 
     /**
-     * returns current counter and increase it.
+     * returns current counter.
      * @returns {number} current counter
      * */
     get_printed_counter(){
+        return this.printed;
+    }
+
+    /**
+     * increase current counter
+     */
+    increase_printed_counter(){
         this.printed++;
-        return this.printed - 1;
     }
 
     /**
