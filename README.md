@@ -1,5 +1,5 @@
 
-# JS library for Songsheet v1.3.4
+# JS library for Songsheet v1.3.6
 
 ### Features
 - markdown
